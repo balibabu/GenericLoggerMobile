@@ -1,118 +1,39 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { View } from 'react-native';
+import Loggers from './components/Loggers/Loggers';
+import Logs from './components/Logs/Logs';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import Editor from './components/Loggers/Editor';
+import AddField from './components/Loggers/AddField';
+import { CombinedContextProvider } from './components/Contexts/CombinedContext';
+import { MenuProvider } from 'react-native-popup-menu';
+import OptionPage from './components/Loggers/option/OptionPage';
+import { Editor as LogEditor } from './components/Logs/Editor/Editor';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
+const Stack = createStackNavigator();
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+    return (
+        <CombinedContextProvider>
+            <MenuProvider>
+                <NavigationContainer>
+                    <Stack.Navigator screenOptions={navStyle} initialRouteName='Loggers'>
+                        <Stack.Screen name="Loggers" component={Loggers} />
+                        <Stack.Screen name="Editor" component={Editor} />
+                        <Stack.Screen name="AddField" component={AddField} />
+                        <Stack.Screen name="Logs" component={Logs} />
+                        <Stack.Screen name="LogEditor" component={LogEditor} />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </MenuProvider>
+        </CombinedContextProvider>
+    );
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+const navStyle = {
+    headerStyle: { backgroundColor: 'rgb(8 47 73)', height: 50 },
+    headerTintColor: 'rgb(186 230 253)',
+    ...TransitionPresets.SlideFromRightIOS,
+}
 
 export default App;
