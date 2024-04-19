@@ -2,9 +2,12 @@ import React, { useContext } from 'react'
 import { Image, Text, TextInput, View } from 'react-native'
 import LoggerContext from '../Contexts/LoggerContext';
 import CustomButton from '../shared/CustomButton';
+import LogContext from '../Contexts/LogContext';
+import Log from './Log';
 
 export default function Logs(props) {
     const { loggers } = useContext(LoggerContext);
+    const { logs } = useContext(LogContext);
     const foundLogger = loggers.find((logger) => logger.id === props.route.params.id);
 
     return (
@@ -14,8 +17,8 @@ export default function Logs(props) {
                 <TextInput placeholder="search" className='text-lg text-sky-900' />
             </View>
             <View className='flex-row flex-wrap'>
-                <CustomButton {...{ title: 'Add Log', style: 'h-20 w-20 bg-sky-500 m-1', textStyle: 'text-sky-100 text-xl font-bold text-center', onclick: () => props.navigation.navigate('LogEditor', { id: props.route.params.id }) }} />
-                <Text>Logs</Text>
+                <CustomButton {...{ title: 'Add Log', style: 'h-20 w-20 bg-sky-500 m-1', textStyle: 'text-sky-100 text-xl font-bold text-center', onclick: () => props.navigation.navigate('LogEditor', { loggerId: props.route.params.id }) }} />
+                {logs[props.route.params.id] && logs[props.route.params.id].map((log) => <Log key={log.id} {...{ log, navigation: props.navigation, loggerId: props.route.params.id }} />)}
             </View>
         </View>
     )

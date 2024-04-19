@@ -4,7 +4,7 @@ const LogContext = createContext();
 export default LogContext;
 
 
-let id = 0;
+let id = 1;
 
 export const LogContextProvider = ({ children }) => {
 
@@ -19,13 +19,22 @@ export const LogContextProvider = ({ children }) => {
         setLogs((prev) => {
             const oldLogs = prev[loggerId] || [];
             return {
-                ...prev, loggerId: [...oldLogs, { ...log, id: id++ }]
+                ...prev, [loggerId]: [...oldLogs, { ...log, id: id++ }]
             }
         });
     }
 
+    function updateLog(loggerId, updatedLog) {
+        setLogs((prev) => ({ ...prev, [loggerId]: prev[loggerId].map((log) => log.id === updatedLog.id ? updatedLog : log) }));
+    }
+
+    function deleteLog(loggerId, logId) {
+        setLogs((prev) => ({ ...prev, [loggerId]: prev[loggerId].filter((log) => log.id !== logId) }));
+    }
+
     const contextDate = {
-        getLogs, addLog
+        logs,
+        getLogs, addLog, updateLog, deleteLog
     };
 
     return (

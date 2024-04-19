@@ -4,19 +4,33 @@ import LoggerContext from '../../Contexts/LoggerContext';
 import InputForm from './InputForm';
 import LogContext from '../../Contexts/LogContext';
 import CustomButton from '../../shared/CustomButton';
+import DateField from '../../shared/UIComponents/DateField';
+
 
 export function Editor(props) {
     const { loggers } = useContext(LoggerContext);
-    const { addLog } = useContext(LogContext);
+    const { addLog, logs, updateLog } = useContext(LogContext);
     const [logger, setLogger] = useState({});
     const [formDetail, setFormDetail] = useState({});
 
     useEffect(() => {
-        const foundLogger = loggers.find((logger) => logger.id === props.route.params.id);
+        const foundLogger = loggers.find((logger) => logger.id === props.route.params.loggerId);
         setLogger(foundLogger);
+        if (props.route.params.logId) {
+            const foundLog = logs[props.route.params.loggerId].find((log) => log.id === props.route.params.logId);
+            setFormDetail(foundLog);
+        }
     }, [])
 
 
+    function saveHandler() {
+        if (props.route.params.logId) {
+            updateLog(props.route.params.loggerId, formDetail);
+        } else {
+            addLog(props.route.params.loggerId, formDetail);
+        }
+        props.navigation.goBack();
+    }
 
     return (
         <View className='mx-1 flex-1'>
@@ -35,7 +49,7 @@ export function Editor(props) {
             />
             <View className='flex-row justify-between'>
                 <CustomButton {...{ title: 'cancel', style: '', onclick: () => props.navigation.goBack() }} />
-                <CustomButton {...{ title: 'save', style: '', onclick: () => addLog(formDetail) }} />
+                <CustomButton {...{ title: 'save', style: '', onclick: saveHandler }} />
             </View>
         </View>
     )
