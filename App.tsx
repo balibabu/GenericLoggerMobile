@@ -1,14 +1,12 @@
 import React from 'react';
-import { View } from 'react-native';
 import Loggers from './components/Loggers/Loggers';
 import Logs from './components/Logs/Logs';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import Editor from './components/Loggers/Editor';
-import AddField from './components/Loggers/AddField';
+import Editor from './components/Loggers/Editor/Editor';
+import AddField from './components/Loggers/Editor/AddField';
 import { CombinedContextProvider } from './components/Contexts/CombinedContext';
 import { MenuProvider } from 'react-native-popup-menu';
-import OptionPage from './components/Loggers/option/OptionPage';
 import { Editor as LogEditor } from './components/Logs/Editor/Editor';
 
 const Stack = createStackNavigator();

@@ -17,15 +17,15 @@ export function Editor(props) {
         const foundLogger = loggers.find((logger) => logger.id === props.route.params.loggerId);
         setLogger(foundLogger);
         if (props.route.params.logId) {
-            const foundLog = logs[props.route.params.loggerId].find((log) => log.id === props.route.params.logId);
+            const foundLog = logs.find((log) => log.id === props.route.params.logId);
             setFormDetail(foundLog);
         }
-    }, [])
+    }, []);
 
 
     function saveHandler() {
         if (props.route.params.logId) {
-            updateLog(props.route.params.loggerId, formDetail);
+            updateLog(formDetail);
         } else {
             addLog(props.route.params.loggerId, formDetail);
         }

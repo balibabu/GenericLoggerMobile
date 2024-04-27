@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { FlatList, Text, TextInput, View } from 'react-native'
-import CustomButton from '../../shared/CustomButton'
-import LoggerContext from '../../Contexts/LoggerContext';
+import CustomButton from '../../../shared/CustomButton'
+import LoggerContext from '../../../Contexts/LoggerContext';
 
 export default function Form() {
     const { field, setField } = useContext(LoggerContext);

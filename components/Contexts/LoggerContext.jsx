@@ -1,44 +1,63 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { Confirmation } from "../shared/Confirmation";
+import firestore from '@react-native-firebase/firestore';
+import { Alert, ToastAndroid } from "react-native";
 
 const LoggerContext = createContext();
 export default LoggerContext;
 
-const dummyLoggers = [
-    { id: 1, title: 'Logger1', fields: [{ fieldName: "name", fieldType: 'Text' }, { fieldName: "description", fieldType: 'Large Text' }, { fieldName: "Radio", fieldType: 'Radio', options: ['hi', 'hello'] }, { fieldName: "Multiple Select", fieldType: 'Multiple Select', options: ['hi', 'hello'] }, { fieldName: "Date Time", fieldType: 'Date Time' }, { fieldName: "Date", fieldType: 'Date' }, { fieldName: "Time", fieldType: 'Time' }, { fieldName: "Checkbox", fieldType: 'Checkbox' }, { fieldName: "Key Value Pair", fieldType: 'Key Value Pair' }, { fieldName: "Options", fieldType: 'Options', options: ['hi', 'hello'] }] },
-    { id: 2, title: 'Logger2', fields: [{ fieldName: "check", fieldType: 'Checkbox' }, { fieldName: "date", fieldType: 'Date' }] },
-]
+
 let id = 3;
 const dummyLogger = { title: '', fields: [] };
 export const LoggerContextProvider = ({ children }) => {
 
-    const [loggers, setLoggers] = useState(dummyLoggers);
+    const [loggers, setLoggers] = useState([]);
     const [logger, setLogger] = useState(dummyLogger);
     const [fields, setFields] = useState([]);
     const [field, setField] = useState({});
 
+    useEffect(() => {
+        const unsubscribe = firestore()
+            .collection('loggers')
+            .onSnapshot(querySnapshot => {
+                const _loggers = [];
+                querySnapshot.forEach((logger) => {
+                    _loggers.push({ id: logger.id, ...logger.data() });
+                });
+                setLoggers(_loggers); // Set loggers here
+            }, error => {
+                console.error("Error fetching loggers: ", error);
+            });
+
+        return () => unsubscribe();
+    }, []);
+
 
     function addLogger(logger) {
-        setLoggers((prev) => [...prev, { ...logger, id: id++ }]);
-        setLogger(dummyLogger);
+        firestore().collection('loggers').add(logger);
     }
 
     function updateLogger(updatedLogger) {
-        setLoggers((prev) => [...prev.map((logger) => logger.id === updatedLogger.id ? updatedLogger : logger)]);
-        setLogger(dummyLogger);
+        firestore().collection('loggers').doc(updatedLogger.id).update(updatedLogger);
+    }
+
+    async function deleteLogger(id) {
+        const status = await Confirmation('Delete Logger', 'Are you sure?');
+        if (status) {
+            firestore().collection('loggers').doc(id).delete();
+        }
     }
 
     function addField(field) {
         if (field.fieldName && field.fieldType) {
             setFields((prev) => [...prev, field]);
             setField({});
-            // setFields((prev) => ({ ...prev, fields: [...prev.fields, field] }));
         }
     }
 
     function updateField(updatedField, index) {
         setFields((prev) => [...prev.map((field, i) => i === index ? updatedField : field)]);
         setField({});
-        // setLogger((prev) => ({ ...prev, fields: prev.fields.map((oldField, index) => index === updating ? updatedField : oldField) }));
     }
 
     function deleteField(index) {
@@ -47,7 +66,7 @@ export const LoggerContextProvider = ({ children }) => {
 
     const contextDate = {
         loggers, setLoggers,
-        addLogger, updateLogger,
+        addLogger, updateLogger, deleteLogger,
         logger, setLogger,
         fields, setFields, addField, updateField, deleteField,
         field, setField

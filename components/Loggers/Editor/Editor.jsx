@@ -1,8 +1,8 @@
-import { Button, FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Text, TextInput, ToastAndroid, View } from "react-native";
 import FieldRow from "./FieldRow";
-import { useContext, useEffect, useState } from "react";
-import CustomButton from "../shared/CustomButton";
-import LoggerContext from "../Contexts/LoggerContext";
+import { useContext, useEffect } from "react";
+import CustomButton from "../../shared/CustomButton";
+import LoggerContext from "../../Contexts/LoggerContext";
 
 // npm i react-native-draggable-flatlist
 export default function Editor(props) {
@@ -25,6 +25,9 @@ export default function Editor(props) {
         if (props.route.params) {
             updateLogger(_logger);
         } else {
+            if (checkDuplicateLogger(loggers, _logger)) {
+                return;
+            }
             addLogger(_logger);
         }
         props.navigation.goBack();
@@ -61,3 +64,12 @@ export default function Editor(props) {
 }
 
 
+function checkDuplicateLogger(loggers, logger) {
+    for (const _logger of loggers) {
+        if (_logger.title === logger.title) {
+            ToastAndroid.show('logger with same title is already present !', ToastAndroid.SHORT);
+            return true;
+        }
+    }
+    return false;
+}

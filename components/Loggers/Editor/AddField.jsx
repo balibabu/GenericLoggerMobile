@@ -1,9 +1,8 @@
 import DropDownPicker from 'react-native-dropdown-picker';
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import CustomButton from '../shared/CustomButton';
-import FieldRow from './FieldRow';
-import LoggerContext from '../Contexts/LoggerContext';
+import { StyleSheet, Text, TextInput, View } from 'react-native'
+import CustomButton from '../../shared/CustomButton';
+import LoggerContext from '../../Contexts/LoggerContext';
 import OptionPage from './option/OptionPage';
 
 export default function AddField(props) {
@@ -20,7 +19,7 @@ export default function AddField(props) {
         { label: 'Radio', value: 'Radio' },
     ]);
 
-    const { fields, addField, updateField, logger, setFields, field, setField } = useContext(LoggerContext);
+    const { fields, addField, updateField, field, setField } = useContext(LoggerContext);
 
     const [open, setOpen] = useState(false);
     const [fieldType, setFieldType] = useState('Text');
@@ -37,12 +36,10 @@ export default function AddField(props) {
 
     function addHandler() {
         const _field = { ...field, fieldType };
-        // console.log(logger);
         if (props.route.params) {
             updateField(_field, props.route.params.index);
         } else {
             addField(_field);
-            // setFields((prev) => [...prev, field]);
         }
         props.navigation.goBack();
     }
@@ -68,26 +65,15 @@ export default function AddField(props) {
                 setValue={setFieldType}
             />
 
-            {/* <CustomButton {...{ title: 'option', style: 'bg-sky-300 mt-2 p-2 rounded-md ', onclick: () => props.navigation.navigate('OptionPage', { fieldType }) }} /> */}
-
             <View className='mt-2'>
                 <OptionPage {...{ fieldType }} />
             </View>
 
 
-            <View className='flex-row justify-between mx-1 mb-1' style={styles.buttons}>
+            <View className='flex-row justify-between mx-1 mb-1'>
                 <CustomButton {...{ title: 'cancel', style: '', onclick: () => props.navigation.goBack() }} />
                 <CustomButton {...{ title: 'ok', style: '', onclick: addHandler }} />
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    buttons: {
-        // position: 'absolute',
-        // bottom: 0,
-        // justifyContent: 'between'
-    }
-});
-// className='flex-row justify-between mx-3 mb-1'

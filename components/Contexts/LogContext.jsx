@@ -1,35 +1,49 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { Confirmation } from "../shared/Confirmation";
+import firestore from '@react-native-firebase/firestore';
 
 const LogContext = createContext();
 export default LogContext;
 
 
-let id = 1;
-
 export const LogContextProvider = ({ children }) => {
+    const [logs, setLogs] = useState([]);
 
-    const [logs, setLogs] = useState({});
+    useEffect(() => {
+        const unsubscribe = firestore()
+            .collection('logs')
+            .onSnapshot(querySnapshot => {
+                const _logs = [];
+                querySnapshot.forEach((log) => {
+                    _logs.push({ id: log.id, ...log.data() });
+                });
+                setLogs(_logs); // Set loggers here
+            }, error => {
+                console.error("Error fetching loggers: ", error);
+            });
+
+        return () => unsubscribe();
+    }, []);
+
 
     function getLogs(loggerId) {
-        const _logs = logs[loggerId] || [];
+        const _logs = logs.filter((log) => log.loggerId === loggerId);
         return _logs;
     }
 
     function addLog(loggerId, log) {
-        setLogs((prev) => {
-            const oldLogs = prev[loggerId] || [];
-            return {
-                ...prev, [loggerId]: [...oldLogs, { ...log, id: id++ }]
-            }
-        });
+        firestore().collection('logs').add({ loggerId, ...log });
     }
 
-    function updateLog(loggerId, updatedLog) {
-        setLogs((prev) => ({ ...prev, [loggerId]: prev[loggerId].map((log) => log.id === updatedLog.id ? updatedLog : log) }));
+    function updateLog(updatedLog) {
+        firestore().collection('logs').doc(updatedLog.id).update(updatedLog);
     }
 
-    function deleteLog(loggerId, logId) {
-        setLogs((prev) => ({ ...prev, [loggerId]: prev[loggerId].filter((log) => log.id !== logId) }));
+    async function deleteLog(logId) {
+        const status = await Confirmation('Delete Logger', 'Are you sure?');
+        if (status) {
+            firestore().collection('logs').doc(logId).delete();
+        }
     }
 
     const contextDate = {

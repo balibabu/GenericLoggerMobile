@@ -25,19 +25,19 @@ export default function InputForm(props) {
         ui = <Checkbox {...params} />
     } else if (type === 'large text') {
         ui = <LargeTextInput {...params} />
-    }else if (type === 'date') {
+    } else if (type === 'date') {
         ui = <DateField {...params} />
-    }else if (type === 'time') {
+    } else if (type === 'time') {
         ui = <TimeField {...params} />
-    }else if (type === 'date time') {
+    } else if (type === 'date time') {
         ui = <DateTimeField {...params} />
-    }else if (type === 'options') {
+    } else if (type === 'options') {
         ui = <SelectOption {...params} />
-    }else if (type === 'radio') {
+    } else if (type === 'radio') {
         ui = <RadioButton {...params} />
-    }else if (type === 'multiple select') {
+    } else if (type === 'multiple select') {
         ui = <MultipleSelect {...params} />
-    }else if (type === 'key value pair') {
+    } else if (type === 'key value pair') {
         ui = <KeyValueField {...params} />
     }
 
