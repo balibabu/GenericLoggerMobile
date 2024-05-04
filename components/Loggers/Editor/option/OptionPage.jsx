@@ -27,7 +27,7 @@ export default function OptionPage(props) {
         );
     }
     const params = { field: props.field, formDetail: props.formDetail, setFormDetail: props.setFormDetail };
-
+    
     return <View>
         {page}
         <LargeTextInput {...{ field: { fieldName: 'extra' }, formDetail: field, setFormDetail: setField, placeholder: '{\n\t\tkey1:value1,\n\t\tkey2:value2\n}' }} />

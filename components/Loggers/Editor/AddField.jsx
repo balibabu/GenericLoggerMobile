@@ -48,9 +48,9 @@ export default function AddField(props) {
     return (
         <View className='m-2 flex-1'>
             <View className='border-2 border-sky-900 p-1 mb-2 rounded-md'>
-                <Text className='text-lg p-0 m-0 font-bold'>Label Name</Text>
+                <Text className='text-lg text-sky-900 p-0 m-0'>Label Name</Text>
                 <TextInput
-                    className='text-lg text-sky-900  p-0 m-0'
+                    className='text-lg text-sky-900  p-0 m-0 font-bold'
                     value={field.fieldName || ''}
                     onChangeText={(text) => setField((prev) => ({ ...prev, fieldName: text }))}
                 />
